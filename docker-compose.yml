@@ -1,0 +1,10 @@
+---
+version: '3.7'
+
+services:
+  peggo:
+    build:
+      context: golang/
+      dockerfile: Dockerfile
+    volumes:
+      - ./testdata:/app/testdata

@@ -1,0 +1,31 @@
+---
+kind: pipeline
+name: build-test
+
+volumes:
+  - name: deps
+    temp: {}
+
+steps:
+  - name: build-modules-go
+    image: golang:1.15.0-alpine3.12
+    volumes:
+      - name: deps
+        path: /go
+    commands:
+      - apk add --no-cache git
+      - cd golang
+      - go mod tidy
+      - go build -v ./...
+      - go mod vendor
+
+  - name: test-go
+    image: svajone/gotest:latest
+    volumes:
+      - name: deps
+        path: /go
+    depends_on:
+      - build-modules
+    commands:
+      - cd golang
+      - testcov.sh
